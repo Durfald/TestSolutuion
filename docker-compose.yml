@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  vuespa-site:
+    build:
+      context: ./testsolutuion.client  # Путь к папке с клиентом
+      dockerfile: Dockerfile
+    ports:
+      - "8080:58430"
+    depends_on:
+      - aspnetcore.api
+    
+  aspnetcore.api:
+    build:
+      context: ./TestSolutuion.Server  # Путь к серверу
+      dockerfile: Dockerfile

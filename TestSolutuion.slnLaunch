@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Новый профиль",
+    "Projects": [
+      {
+        "Path": "TestSolutuion.Server\\TestSolutuion.Server.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "testsolutuion.client\\testsolutuion.client.esproj",
+        "Action": "Start",
+        "DebugTarget": "localhost (Edge)"
+      }
+    ]
+  }
+]

@@ -1,0 +1,50 @@
+.btn,
+.btn-accent {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    box-sizing: border-box;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.btn {
+    background-color: #ffffff; /* Цвет фона */
+    outline: 2px solid #14213d; /* Цвет компонента */
+    outline-offset: -2px;
+    color: #14213d; /* Цвет текста */
+}
+
+    .btn:hover {
+        background-color: #fca311; /* Цвет акцента */
+        color: #ffffff; /* Цвет текста */
+    }
+
+/* Кнопка справа */
+.btn-accent {
+    background-color: #fca311;
+    color: #ffffff;
+}
+
+    .btn-accent:hover {
+        background-color: #e58e0d; /* Более темный оттенок акцентного цвета */
+    }
+
+    /* Отключенные кнопки */
+    .btn:disabled,
+    .btn-accent:disabled {
+        opacity: 0.5;
+        cursor: unset;
+        background-color: #ffffff; /* Оставить основной цвет фона для отключенной кнопки */
+        color: #14213d; /* Основной цвет текста для отключенной кнопки */
+    }
+
+        .btn:disabled:hover,
+        .btn-accent:disabled:hover {
+            background-color: #ffffff; /* Без изменений при наведении на отключенную кнопку */
+            color: #14213d; /* Цвет текста не меняется */
+        }

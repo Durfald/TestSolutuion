@@ -1,0 +1,11 @@
+{
+  "files": ["./src/scripts/ApiService.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
+}
