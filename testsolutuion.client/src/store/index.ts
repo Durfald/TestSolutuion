@@ -11,9 +11,10 @@ interface State {
   role: string | null;
   JWToken: string | null;
   cart: CartItem[];
-  selectedCategory: string | null;
+  selectedCategories: string[];
   username: string | null;
   searchQuery: string;
+  id: string | null;
 }
 
 const store = createStore<State>({
@@ -21,11 +22,20 @@ const store = createStore<State>({
     JWToken: localStorage.getItem('JWToken') || null,
     role: localStorage.getItem('Role') || null, // Загружаем роль из localStorage
     cart: sessionStorage.getItem('Cart') ? JSON.parse(sessionStorage.getItem('Cart') as string) : [],
-    selectedCategory: null,
+    selectedCategories: [],
     username: localStorage.getItem('Username') || null,
     searchQuery: '',
+    id: localStorage.getItem('Id') || null
   },
   mutations: {
+    setId(state: State, id: string) {
+      state.id = id;
+      localStorage.setItem('Id', id);
+    },
+    deleteId(state: State) {
+      state.id = null;
+      localStorage.removeItem('Id');
+    },
     // Мутация для изменения роли
     setRole(state: State, role: string) {
       state.role = role;
@@ -71,7 +81,9 @@ const store = createStore<State>({
       sessionStorage.removeItem('Cart');
     },
     setSelectedCategory(state: State, category: string | null) {
-      state.selectedCategory = category;
+      if (category) {
+        state.selectedCategories.push(category);
+      }
     },
     SetUsername(state: State, username: string) {
       state.username = username;
@@ -95,6 +107,12 @@ const store = createStore<State>({
     },
     deleteRole({ commit }) {
       commit('deleteeRole');
+    },
+    setId({ commit }, id: string) {
+      commit('setId', id);
+    },
+    deleteId({ commit }) {
+      commit('deleteId');
     },
     setJWToken({ commit }, JWToken: string) {
       commit('setJWToken', JWToken);
@@ -142,8 +160,8 @@ const store = createStore<State>({
       return state.cart.reduce((total, item) => total + item.quantity, 0);
     },
     getCartByCategory(state: State) {
-      if (state.selectedCategory) {
-        return state.cart.filter(item => item.category === state.selectedCategory);
+      if (state.selectedCategories) {
+        return state.cart.filter(item => state.selectedCategories.includes(item.category));
       }
       return state.cart; // Если категория не выбрана, возвращаем все товары
     },
@@ -152,6 +170,9 @@ const store = createStore<State>({
     },
     getsearchQuery(state: State) {
       return state.searchQuery;
+    },
+    getId(state: State) {
+      return state.id;
     }
   },
 });

@@ -10,7 +10,7 @@ namespace TestSolutuion.Server.Database.Models
     public class OrderElement
     {
         [Column("ID"), Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// ИД заказа.
@@ -19,7 +19,7 @@ namespace TestSolutuion.Server.Database.Models
         [Column("ORDER_ID")]
         [Required]
         [ForeignKey("Order")]
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; } = string.Empty;
 
         /// <summary>
         /// ИД товара.
@@ -28,7 +28,7 @@ namespace TestSolutuion.Server.Database.Models
         [Column("ITEM_ID")]
         [Required]
         [ForeignKey("Product")]
-        public Guid ItemId { get; set; }
+        public string ItemId { get; set; } = string.Empty;
 
         /// <summary>
         /// Количество заказанного товара.
@@ -46,8 +46,8 @@ namespace TestSolutuion.Server.Database.Models
         [Required]
         public double ItemPrice { get; set; }
 
-        public Order Order { get; set; } = new();
+        public Order? Order { get; set; }
 
-        public Product Product { get; set; } = new();
+        public Product? Product { get; set; }
     }
 }

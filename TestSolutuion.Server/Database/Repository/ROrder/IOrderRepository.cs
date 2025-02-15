@@ -16,7 +16,7 @@ namespace TestSolutuion.Server.Database.Repository.ROrder
         /// </summary>
         /// <param name="customerId"> Идентификатор клиента</param>
         /// <returns></returns>
-        public Task<IEnumerable<Order>> GetOrdersByCustomerAsync(Guid customerId);
+        public Task<IEnumerable<Order>> GetOrdersByCustomerAsync(string customerId);
 
         /// <summary>
         /// Получить заказы в заданном диапазоне
@@ -44,6 +44,6 @@ namespace TestSolutuion.Server.Database.Repository.ROrder
         /// </summary>
         /// <param name="orderId"> Идентификатор заказа</param>
         /// <returns></returns>
-        public Task<Order?> GetOrderWithOrderElementsAsync(Guid orderId);
+        public Task<Order?> GetOrderWithOrderElementsAsync(string orderId);
     }
 }

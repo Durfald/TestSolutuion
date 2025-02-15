@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TestSolutuion.Server.Database.Models;
+using TestSolutuion.Server.Domain.Models;
 
 namespace TestSolutuion.Server.Domain.AuthService
 {
@@ -20,7 +21,7 @@ namespace TestSolutuion.Server.Domain.AuthService
             _signInManager = signInManager;
         }
 
-        public async Task<(string Token, string Role)> LoginAsync(string username, string password)
+        public async Task<AuthModel> LoginAsync(string username, string password)
         {
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
@@ -29,19 +30,23 @@ namespace TestSolutuion.Server.Domain.AuthService
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             if (!result.Succeeded)
                 throw new UnauthorizedAccessException("Invalid password or account issues");
-
-            return (GenerateJwtToken(user), user.Role);
+            var customer = await _userManager.FindByNameAsync(username);
+            return new AuthModel() { 
+            Token = GenerateJwtToken(user),
+            Role = user.Role,
+            CustomerId = customer?.Id??string.Empty,
+            };
         }
 
         private string GenerateJwtToken(AppUser user)
         {
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Name, user.UserName ?? "Default"),
             new Claim(ClaimTypes.Role, user.Role),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+            };
 
             var jwtKey = _configuration["JwtSettings:Key"] ?? throw new Exception("JWT key not found");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));

@@ -6,10 +6,10 @@ namespace TestSolutuion.Server.Domain.UserManager
     {
         Task<UserModel> CreateUserAsync(UserModel user);
         // Добавьте другие методы, например, для получения, обновления и удаления пользователей:
-        Task<UserModel> GetUserByIdAsync(Guid id);
+        Task<UserModel> GetUserByIdAsync(string id);
         Task<IEnumerable<UserModel>> GetAllUsersAsync();
-        Task UpdateUserAsync(Guid id, UserModel user);
-        Task DeleteUserAsync(Guid id);
+        Task UpdateUserAsync(string id, UserModel user);
+        Task DeleteUserAsync(string id);
         Task<UserModel> GetUserByUsernameAsync(string Username);
     }
 }

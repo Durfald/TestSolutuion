@@ -24,12 +24,12 @@ namespace TestSolutuion.Server.Domain.UserManager
                 throw new ArgumentException("User already exists");
 
             AppUser appUser = user;
-
+            appUser.Id=Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(appUser, user.Password);
             if (!result.Succeeded)
                 throw new InvalidOperationException(string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            if (user.Role != DefaultStaticData.AdminRole)
+            if (user.Role != DefaultStaticData.ManagerRole)
             {
                 Random random = new Random();
                 int num1 = random.Next(0, 10);
@@ -38,7 +38,7 @@ namespace TestSolutuion.Server.Domain.UserManager
                 int num4 = random.Next(0, 10);
                 await _repositoryUnitOfWork.Customer.AddAsync(new Customer
                 {
-                    Id = new Guid(appUser.Id),
+                    Id = appUser.Id,
                     Name = appUser.UserName,
                     Code = $"{num1}{num2}{num3}{num4}-{DateTime.UtcNow.Year}"
                 });
@@ -47,16 +47,17 @@ namespace TestSolutuion.Server.Domain.UserManager
             return appUser;
         }
       
-        public async Task UpdateUserAsync(Guid id, UserModel user)
+        public async Task UpdateUserAsync(string id, UserModel user)
         {
             var customer = await _repositoryUnitOfWork.Customer.GetByIdAsync(id);
             var appUser = await _repositoryUnitOfWork.User.GetByIdAsync(id);
-            if (appUser == null || customer == null)
+            if (appUser == null)
                 throw new ArgumentException("User not found");
 
             if (!string.IsNullOrEmpty(user.Username))
             {
-                customer.Name = user.Username;
+                if(customer != null)
+                    customer.Name = user.Username;
                 appUser.UserName = user.Username;
             }
 
@@ -65,12 +66,14 @@ namespace TestSolutuion.Server.Domain.UserManager
 
             if (!string.IsNullOrEmpty(user.PhoneNumber))
                 appUser.PhoneNumber = user.PhoneNumber;
-
-            await _repositoryUnitOfWork.Customer.UpdateAsync(customer);
+            if(!string.IsNullOrEmpty(user.Role))
+                appUser.Role = user.Role;
+            if (customer != null)
+                await _repositoryUnitOfWork.Customer.UpdateAsync(customer);
             await _repositoryUnitOfWork.User.UpdateAsync(appUser);
         }
 
-        public async Task DeleteUserAsync(Guid id)
+        public async Task DeleteUserAsync(string id)
         {
             var delcustomer = await _repositoryUnitOfWork.Customer.DeleteAsync(id);
             var deluser = await _repositoryUnitOfWork.User.DeleteAsync(id);
@@ -87,7 +90,7 @@ namespace TestSolutuion.Server.Domain.UserManager
             return user;
         }
 
-        public async Task<UserModel> GetUserByIdAsync(Guid id)
+        public async Task<UserModel> GetUserByIdAsync(string id)
         {
             var user = await _repositoryUnitOfWork.User.GetByIdAsync(id);
             if (user == null)

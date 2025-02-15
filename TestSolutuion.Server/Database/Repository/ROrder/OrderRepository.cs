@@ -30,7 +30,7 @@ namespace TestSolutuion.Server.Database.Repository.ROrder
             return await query.ToListAsync();
         }
 
-        public Task<IEnumerable<Order>> GetOrdersByCustomerAsync(Guid customerId)
+        public Task<IEnumerable<Order>> GetOrdersByCustomerAsync(string customerId)
         {
             return FindAsync(o => o.CustomerId == customerId);
         }
@@ -45,7 +45,7 @@ namespace TestSolutuion.Server.Database.Repository.ROrder
             return (await FindAsync(o => o.OrderNumber == orderNumber)).FirstOrDefault();
         }
 
-        public async Task<Order?> GetOrderWithOrderElementsAsync(Guid orderId)
+        public async Task<Order?> GetOrderWithOrderElementsAsync(string orderId)
         {
             return await _context.Orders
                .Where(o => o.Id == orderId)

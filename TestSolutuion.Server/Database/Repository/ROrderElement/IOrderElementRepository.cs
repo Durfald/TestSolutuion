@@ -9,6 +9,6 @@ namespace TestSolutuion.Server.Database.Repository.ROrderElement
         /// </summary>
         /// <param name="orderId"> Идентификатор элемента заказа</param>
         /// <returns></returns>
-        public Task<IEnumerable<OrderElement>> GetOrderElementsByOrderIdAsync(Guid orderId);
+        public Task<IEnumerable<OrderElement>> GetOrderElementsByOrderIdAsync(string orderId);
     }
 }

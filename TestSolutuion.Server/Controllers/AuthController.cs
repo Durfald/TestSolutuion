@@ -23,7 +23,7 @@ namespace TestSolutuion.Server.Controllers
             try
             {
                 var token = await _authService.LoginAsync(model.Username, model.Password);
-                return Ok(new { Token = token.Token, Role = token.Role });
+                return Ok(new { Token = token.Token, Role = token.Role,CustomerId=token.CustomerId });
             }
             catch (UnauthorizedAccessException ex)
             {

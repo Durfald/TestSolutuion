@@ -9,7 +9,7 @@ namespace TestSolutuion.Server.Database.Repository.RCustomer
         /// </summary>
         /// <param name="customerId"> Идентификатор заказчика</param>
         /// <returns></returns>
-        Task<Customer?> GetCustomerWithOrdersAsync(Guid customerId);
+        Task<Customer?> GetCustomerWithOrdersAsync(string customerId);
 
         /// <summary>
         /// Получить заказчиков по коду

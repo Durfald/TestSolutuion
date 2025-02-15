@@ -8,7 +8,7 @@ namespace TestSolutuion.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [DenyRoles(DefaultStaticData.UserRole)]
+    [AllowRoles(DefaultStaticData.ManagerRole)]
     [Authorize]
     public class CustomerController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpGet("GetCustomer/{id}")]
-        public async Task<IActionResult> GetCustomer(Guid id)
+        public async Task<IActionResult> GetCustomer(string id)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpDelete("DeleteCustomer/{id}")]
-        public async Task<IActionResult> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteCustomer(string id)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace TestSolutuion.Server.Controllers
 
 
         [HttpPut("UpdateCustomer/{id}")]
-        public async Task<IActionResult> UpdateCustomer(Guid id, Customer customer)
+        public async Task<IActionResult> UpdateCustomer(string id,[FromBody] Customer customer)
         {
             try
             {

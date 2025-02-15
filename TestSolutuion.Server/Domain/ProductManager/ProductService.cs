@@ -25,14 +25,14 @@ namespace TestSolutuion.Server.Domain.ProductManager
             return product;
         }
 
-        public async Task DeleteProductAsync(Guid id)
+        public async Task DeleteProductAsync(string id)
         {
             var deleted = await _repositoryUnitOfWork.Product.DeleteAsync(id);
             if (!deleted)
                 throw new ArgumentException("Product not found");
         }
 
-        public async Task DeleteProductsAsync(IEnumerable<Guid> ids)
+        public async Task DeleteProductsAsync(IEnumerable<string> ids)
         {
             foreach (var id in ids)
             {
@@ -40,13 +40,15 @@ namespace TestSolutuion.Server.Domain.ProductManager
             }
         }
 
-        public async Task<Product> UpdateProductAsync(Guid id,Product product)
+        public async Task<Product> UpdateProductAsync(string id,Product product)
         {
-            var dbproduct = _repositoryUnitOfWork.Product.GetByIdAsync(id);
+            var dbproduct =await _repositoryUnitOfWork.Product.GetByIdAsync(id);
             if(dbproduct == null)
                 throw new ArgumentException("Product not found");
-            product.Id = id;
-            await _repositoryUnitOfWork.Product.UpdateAsync(product);
+            dbproduct.Name = product.Name;
+            dbproduct.Price = product.Price;
+            dbproduct.Category = product.Category;
+            await _repositoryUnitOfWork.Product.UpdateAsync(dbproduct);
             return product;
         }
 
@@ -55,7 +57,7 @@ namespace TestSolutuion.Server.Domain.ProductManager
             return await _repositoryUnitOfWork.Product.GetAllAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(Guid id)
+        public async Task<Product> GetProductByIdAsync(string id)
         {
             var product = await _repositoryUnitOfWork.Product.GetByIdAsync(id);
             if (product == null)

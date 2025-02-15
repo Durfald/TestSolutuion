@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
-using TestSolutuion.Server.Database.Models;
+using System.Security.Claims;
 
 namespace TestSolutuion.Server.Extensions
 {
@@ -17,12 +16,9 @@ namespace TestSolutuion.Server.Extensions
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<AppUser>>();
-            if (userManager == null)
-                throw new Exception("UserManager is null");
 
-            var user = await userManager.GetUserAsync(context.HttpContext.User);
-            if (user == null || _roles.Contains(user.Role))
+            var Role = context.HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (Role == null || _roles.Contains(Role))
                 context.Result = new ForbidResult();
         }
     }

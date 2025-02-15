@@ -15,7 +15,7 @@ namespace TestSolutuion.Server.Database.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<T?> GetByIdAsync(Guid id);
+        Task<T?> GetByIdAsync(string id);
 
         /// <summary>
         /// Получение сущностей по условию
@@ -43,6 +43,6 @@ namespace TestSolutuion.Server.Database.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(string id);
     }
 }

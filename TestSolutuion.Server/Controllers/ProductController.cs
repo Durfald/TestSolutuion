@@ -19,7 +19,7 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpPost("CreateProduct")]
-        [DenyRoles(DefaultStaticData.UserRole)]
+        [AllowRoles(DefaultStaticData.ManagerRole)]
         public async Task<IActionResult> CreateProduct(Product product)
         {
             try
@@ -40,8 +40,8 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpDelete("DeleteProduct/{id}")]
-        [DenyRoles(DefaultStaticData.UserRole)]
-        public async Task<IActionResult> DeleteProduct(Guid id)
+        [AllowRoles(DefaultStaticData.ManagerRole)]
+        public async Task<IActionResult> DeleteProduct(string id)
         {
             try
             {
@@ -61,16 +61,16 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpDelete("DeleteProducts")]
-        [DenyRoles(DefaultStaticData.UserRole)]
-        public async Task<IActionResult> DeleteProducts(IEnumerable<Guid> ids)
+        [AllowRoles(DefaultStaticData.ManagerRole)]
+        public async Task<IActionResult> DeleteProducts(IEnumerable<string> ids)
         {
             await _productService.DeleteProductsAsync(ids);
             return Ok();
         }
 
         [HttpPut("UpdateProduct/{id}")]
-        [DenyRoles(DefaultStaticData.UserRole)]
-        public async Task<IActionResult> UpdateProduct(Guid id,Product product)
+        [AllowRoles(DefaultStaticData.ManagerRole)]
+        public async Task<IActionResult> UpdateProduct(string id,Product product)
         {
             try
             {
@@ -88,8 +88,8 @@ namespace TestSolutuion.Server.Controllers
             }
         }
 
-        [HttpGet("GetProduct")]
-        public async Task<IActionResult> GetProduct(Guid id)
+        [HttpGet("GetProduct/{id}")]
+        public async Task<IActionResult> GetProduct(string id)
         {
             try
             {

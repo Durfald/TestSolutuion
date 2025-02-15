@@ -7,7 +7,7 @@ namespace TestSolutuion.Server.Database.Repository.ROrderElement
     {
         public OrderElementRepository(SQLiteDataBaseContext context) : base(context) { }
 
-        public async Task<IEnumerable<OrderElement>> GetOrderElementsByOrderIdAsync(Guid orderId)
+        public async Task<IEnumerable<OrderElement>> GetOrderElementsByOrderIdAsync(string orderId)
         {
             return await _context.OrderElements
                   .Where(oe => oe.OrderId == orderId)  

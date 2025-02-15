@@ -7,7 +7,7 @@ namespace TestSolutuion.Server.Database.Repository.RCustomer
     {
         public CustomerRepository(SQLiteDataBaseContext context) : base(context) { }
 
-        public async Task<Customer?> GetCustomerWithOrdersAsync(Guid customerId)
+        public async Task<Customer?> GetCustomerWithOrdersAsync(string customerId)
         {
             return await _context.Customers
                 .Include(c => c.Orders) // Включаем связанные заказы

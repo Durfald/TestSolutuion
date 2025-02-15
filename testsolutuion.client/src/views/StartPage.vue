@@ -1,7 +1,7 @@
 <template>
   <div class="main-start-page">
     <div class="accordion-filter">
-      <Accordion class="accordion" :multiple="true" :activeIndex="[0]">
+      <Accordion class="accordion" :multiple="true">
         <AccordionTab header="Цена">
           <div class="price-filter">
             <input type="number"
@@ -23,6 +23,7 @@
             </div>
             <div class="ui-ckeckbox-group" v-for="category in filteredCategories">
               <label class="ui-checkbox">
+                <input type="checkbox" v-model="category.selected" :binary="true"/>
                 <span>{{category.name}}<span style="color:dimgray;"> ({{category.count}})</span></span>
               </label>
             </div>
@@ -58,6 +59,7 @@
   import { useNotification } from '@/components/Notification.vue';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
+  import checkbox from 'primevue/checkbox';
   const { showNotification } = useNotification();
   const srv: ApiService = new ApiService();
   const store = useStore();
@@ -69,19 +71,20 @@
 
   const filter: Filter = {
     minPrice: null,
-    maxPrice: null
+    maxPrice: null,
   };
 
   const minPrice = ref<number | null>(null);
   const maxPrice = ref<number | null>(null);
-  const categories = ref([]);
+
+  const loadedCategories = ref([]);
 
   const categoryInput = ref<string | null>(null);
   const filteredCategories = computed(() => {
     if (!categoryInput.value) {
-      return categories.value; // Если поле ввода пустое, показываем все категории
+      return loadedCategories.value; // Если поле ввода пустое, показываем все категории
     }
-    var q = categories.value.filter(category =>
+    var q = loadedCategories.value.filter(category =>
       category.name?.toLowerCase().includes(categoryInput.value?.toLowerCase().trim() || '')
     );
     return q;
@@ -138,6 +141,13 @@
       filtered = filtered.filter(product => product.price <= maxPrice.value);
     }
 
+    const selectedcategories = loadedCategories.value.filter(item => item.selected);
+    if (selectedcategories && selectedcategories.length > 0) {
+      filtered = filtered.filter(product =>
+        selectedcategories.some(category => category.name === product.category)
+      );
+    }
+
     return filtered;
   });
 
@@ -187,7 +197,7 @@
   };
 
   const loadCategoriesAsync = async () => {
-    categories.value = await srv.getCategories();
+    loadedCategories.value = await srv.getCategories();
   };
 
   // Загружаем данные при монтировании компонента
@@ -210,18 +220,10 @@
 </script>
 
 <style scoped>
-  .accordion {
-  }
-
-    .accordion > .p-accordionpanel > .p-accordionheader {
-      background-color: blue !important;
-      color: white;
-    }
- 
 
   .ui-checkbox {
     font-size: 14px;
-    padding: 6px 0px 6px 41px;
+    padding: 6px 0px 6px 15px;
     transition: .3s;
     cursor: pointer;
     display: block;
@@ -229,11 +231,18 @@
 
   .ui-ckeckbox-group{
       max-height: 280px;
+      border-radius: 6px;
+      margin: 1px;
       overflow-y: auto;
       overflow-x: hidden;
+      transition: .5s;
   }
 
-  .ui-input-search{
+    .ui-ckeckbox-group:hover {
+      background-color: rgba(252, 163, 17,.5)
+    }
+
+    .ui-input-search {
       margin: 5px 15px 8px;
       background: white;
       border-radius: 8px;
@@ -242,17 +251,17 @@
       line-height: 40px;
       position: relative;
       transition: background .3s;
-  }
+    }
 
-  .ui-input-search-input{
-      background: transparent;
-      border: none;
-      border-radius: 8px;
-      height: 34px;
-      outline: none;
-      padding: 0px 40px 0px 12px;
-      transition: background .3s;
-      width: 100%;
+  .ui-input-search-input {
+    background: transparent;
+    border: unset;
+    border-radius: 8px;
+    height: 34px;
+    outline: 1px solid gray;
+    padding: 0px 40px 0px 12px;
+    transition: background .3s;
+    width: 100%;
   }
 
   .main-start-page{
@@ -333,9 +342,6 @@
       font-size: 14px;
       color: #555;
     }
-
-
-
 
   .pagination {
     text-align: center;

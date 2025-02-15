@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TestSolutuion.Server.Database.Models
 {
@@ -10,7 +11,7 @@ namespace TestSolutuion.Server.Database.Models
     public class Customer
     {
         [Column("ID"), Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Наименование заказчика.
@@ -46,7 +47,7 @@ namespace TestSolutuion.Server.Database.Models
         [Description("% скидки для заказчика. 0 или null – означает что скидка не распространяется.")]
         [Column("DISCOUNT")]
         public float? Discount { get; set; }
-
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
+        [JsonIgnore]
+        public ICollection<Order>? Orders { get; set; }
     }
 }

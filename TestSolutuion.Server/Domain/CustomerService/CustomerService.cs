@@ -12,7 +12,7 @@ namespace TestSolutuion.Server.Domain.CustomerService
             _repositoryUnitOfWork = repositoryUnitOfWork;
         }
 
-        public async Task<Customer> GetCustomerByIdAsync(Guid id)
+        public async Task<Customer> GetCustomerByIdAsync(string id)
         {
             var customer = await _repositoryUnitOfWork.Customer.GetByIdAsync(id);
             if (customer == null)
@@ -25,20 +25,21 @@ namespace TestSolutuion.Server.Domain.CustomerService
             return await _repositoryUnitOfWork.Customer.GetAllAsync();
         }
 
-        public async Task DeleteCustomerAsync(Guid id)
+        public async Task DeleteCustomerAsync(string id)
         {
             var result = await _repositoryUnitOfWork.Customer.DeleteAsync(id);
             if (!result)
                 throw new ArgumentException("Customer not found");
         }
 
-        public async Task<Customer> UpdateCustomerAsync(Guid id, Customer customer)
+        public async Task<Customer> UpdateCustomerAsync(string id, Customer customer)
         {
-            var dbcustomer = _repositoryUnitOfWork.Customer.GetByIdAsync(id);
+            var dbcustomer = await _repositoryUnitOfWork.Customer.GetByIdAsync(id);
             if (dbcustomer == null)
                 throw new ArgumentException("Customer not found");
-            customer.Id = id;
-            await _repositoryUnitOfWork.Customer.UpdateAsync(customer);
+            dbcustomer.Discount = customer.Discount;
+            dbcustomer.Address = customer.Address;
+            await _repositoryUnitOfWork.Customer.UpdateAsync(dbcustomer);
             return customer;
         }
     }

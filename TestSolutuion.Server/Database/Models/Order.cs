@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TestSolutuion.Server.Database.Models
 {
@@ -10,7 +11,7 @@ namespace TestSolutuion.Server.Database.Models
     public class Order
     {
         [Column("ID"), Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// ИД заказчика.
@@ -19,7 +20,7 @@ namespace TestSolutuion.Server.Database.Models
         [Column("CUSTOMER_ID")]
         [Required]
         [ForeignKey("Customer")]
-        public Guid CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
 
         /// <summary>
         /// Дата когда сделан заказ.
@@ -50,15 +51,9 @@ namespace TestSolutuion.Server.Database.Models
         [Column("STATUS")]
         public string? Status { get; set; } = StatusNew;
 
-        [NotMapped]
-        public double Price { get; set; }
-
-        [NotMapped]
-        public double PriceWithDiscount { get; set; }
-
-        public Customer Customer { get; set; } = new();
-
-        public ICollection<OrderElement> OrderElements { get; set; } = new List<OrderElement>();
+        public Customer? Customer { get; set; }
+        [JsonIgnore]
+        public ICollection<OrderElement>? OrderElements { get; set; }
 
         public const string StatusNew = "Новый";
         public const string StatusInProgress = "Выполняется";

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TestSolutuion.Server.Database.Models
 {
@@ -10,7 +11,7 @@ namespace TestSolutuion.Server.Database.Models
     public class Product
     {
         [Column("ID"), Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Код товара, формат «XX-XXXX-YYXX» где Х – число , Y- заглавная буква английского алфавита.
@@ -44,6 +45,7 @@ namespace TestSolutuion.Server.Database.Models
         [MaxLength(30)]
         public string? Category { get; set; }
 
-        public ICollection<OrderElement> OrderElements { get; set; } = new List<OrderElement>();
+        [JsonIgnore]
+        public ICollection<OrderElement>? OrderElements { get; set; }
     }
 }

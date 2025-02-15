@@ -2,6 +2,7 @@
 {
     using global::TestSolutuion.Server.Domain.Models;
     using global::TestSolutuion.Server.Domain.UserManager;
+    using global::TestSolutuion.Server.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using System;
 
@@ -10,19 +11,20 @@
 
         [ApiController]
         [Route("[controller]")]
+        [AllowRoles(DefaultStaticData.ManagerRole)]
         public class UserController : ControllerBase
         {
 
             private readonly ILogger<UserController> _logger;
             private readonly IUserService _userService;
-            public UserController(ILogger<UserController> logger, UserService userService)
+            public UserController(ILogger<UserController> logger, IUserService userService)
             {
                 _logger = logger;
                 _userService = userService;
             }
 
             [HttpGet("GetUser/{id}")]
-            public async Task<IActionResult> GetUser(Guid id)
+            public async Task<IActionResult> GetUser(string id)
             {
                 try
                 {
@@ -84,7 +86,7 @@
             }
 
             [HttpDelete("DeleteUser/{id}")]
-            public async Task<IActionResult> DeleteUser(Guid id)
+            public async Task<IActionResult> DeleteUser(string id)
             {
                try
                 {
@@ -102,16 +104,8 @@
                 }
             }
 
-            //[HttpDelete("DeleteUsers")]
-            //public async Task<IActionResult> DeleteUsers(IEnumerable<Guid> ids)
-            //{
-            //    foreach (var id in ids)
-            //        await repositoryUnitOfWork.User.DeleteAsync(id);
-            //    return Ok();
-            //}
-
             [HttpPut("UpdateUser/{id}")]
-            public async Task<IActionResult> UpdateUser(Guid id,UserModel user)
+            public async Task<IActionResult> UpdateUser(string id,UserModel user)
             {
                 try
                 {
@@ -130,13 +124,6 @@
                 }
             }
 
-            //[HttpPut("UpdateUsers")]
-            //public async Task<IActionResult> UpdateUsers(IEnumerable<User> users)
-            //{
-            //    foreach (var p in users)
-            //        await repositoryUnitOfWork.User.UpdateAsync(p);
-            //    return Ok(users);
-            //}
         }
     }
 }

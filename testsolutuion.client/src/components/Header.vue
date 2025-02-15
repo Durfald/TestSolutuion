@@ -1,8 +1,17 @@
 <template>
   <header class="header">
-    <div class="header-left">
-      <router-link to="/">
+    <div style="display:flex;gap:15px;">
+      <router-link v-if="role !== 'Manager'" to="/">
         <button class="header-btn-accent">Каталог</button>
+      </router-link>
+      <router-link v-if="role === 'Manager'" to="/Users">
+        <button class="header-btn">Пользователи</button>
+      </router-link>
+      <router-link v-if="role === 'Manager'" to="/Products">
+        <button class="header-btn">Товары</button>
+      </router-link>
+      <router-link v-if="role === 'Manager'" to="/Historylist">
+        <button class="header-btn">Заказы</button>
       </router-link>
     </div>
     <!-- Центральная часть -->
@@ -12,17 +21,20 @@
 
     <!-- Правая часть -->
     <div class="header-right">
-      <router-link v-if="role === 'Admin'" to="/adss">
-        <button class="header-btn">Админка</button>
+      
+
+      <router-link to="/History" v-if="role !== 'Manager' && username">
+        <button class="header-btn">История заказов</button>
       </router-link>
-      <router-link to="/Cart">
+      <router-link to="/Cart" v-if="role !== 'Manager' && username">
         <button class="header-btn">Корзина</button>
       </router-link>
 
-
       <div class="div user-info" v-if="username">
         <p class="username">{{username}}</p>
-        <button class="header-btn-accent" @click="logout">Выйти</button>
+        <router-link to="/Login">
+          <button class="header-btn-accent" @click="logout">Выйти</button>
+        </router-link>
       </div>
       <router-link v-else to="/Login">
         <button class="header-btn-accent">Войти</button>

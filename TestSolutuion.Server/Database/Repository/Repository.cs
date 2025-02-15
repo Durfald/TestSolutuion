@@ -23,7 +23,7 @@
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task<bool> DeleteAsync(Guid id)
+        public virtual async Task<bool> DeleteAsync(string id)
         {
             var entity = await GetByIdAsync(id);
             if (entity != null)
@@ -45,7 +45,7 @@
             return await _dbSet.ToListAsync();
         }
 
-        public virtual async Task<T?> GetByIdAsync(Guid id)
+        public virtual async Task<T?> GetByIdAsync(string id)
         {
             return await _dbSet.FindAsync(id);
         }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TestSolutuion.Server.Domain.OrderManager;
 using TestSolutuion.Server.Database.Models;
 using TestSolutuion.Server.Extensions;
+using TestSolutuion.Server.Domain.Models;
 
 namespace TestSolutuion.Server.Controllers
 {
@@ -20,9 +21,17 @@ namespace TestSolutuion.Server.Controllers
             _orderService = orderService;
         }
 
+        [HttpGet("GetOrders")]
+        [AllowRoles(DefaultStaticData.ManagerRole)]
+        public async Task<IActionResult> GetHistoryOrders()
+        {
+            var orders = await _orderService.get();
+            return Ok(orders);
+        }
+
         [HttpPut("ConfirmOrder/{id}")]
-        [DenyRoles(DefaultStaticData.UserRole)]
-        public async Task<IActionResult> ConfirmOrder(Guid id, DateTime shipmentDate)
+        [AllowRoles(DefaultStaticData.ManagerRole)]
+        public async Task<IActionResult> ConfirmOrder(string id, DateTime shipmentDate)
         {
             try
             {
@@ -43,8 +52,8 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpPut("CloseOrder/{id}")]
-        [DenyRoles(DefaultStaticData.UserRole)]
-        public async Task<IActionResult> CloseOrder(Guid id)
+        [AllowRoles(DefaultStaticData.ManagerRole)]
+        public async Task<IActionResult> CloseOrder(string id)
         {
             try
             {
@@ -63,7 +72,8 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpDelete("DeleteOrder/{id}")]
-        public async Task<IActionResult> DeleteOrder(Guid id)
+        [AllowRoles(DefaultStaticData.UserRole)]
+        public async Task<IActionResult> DeleteOrder(string id)
         {
             try
             {
@@ -83,7 +93,8 @@ namespace TestSolutuion.Server.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder(Order order)
+        [AllowRoles(DefaultStaticData.UserRole)]
+        public async Task<IActionResult> CreateOrder([FromBody] OrderModel order)
         {
             try
             {
@@ -97,6 +108,25 @@ namespace TestSolutuion.Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error create order");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("GetHistory/{id}")]
+        public async Task<IActionResult> GetOrders(string id)
+        {
+            try
+            {
+                var orders = await _orderService.GetHistoryOrderAsync(id);
+                return Ok(orders);
+            }
+            catch (ArgumentException ex) { 
+                _logger.LogError(ex, "Error get orders");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error get orders");
                 return StatusCode(500, "Internal server error");
             }
         }

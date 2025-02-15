@@ -10,18 +10,23 @@ using TestSolutuion.Server.Domain.UserManager;
 using TestSolutuion.Server.Database;
 using TestSolutuion.Server.Database.Models;
 using TestSolutuion.Server.Database.Repository.UnitOfWork;
+using System.Security.Claims;
+using TestSolutuion.Server.Domain.CustomerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var specificoriginname = "AllowSpecificOrigins";
+
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IProductService,ProductService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IRepositoryUnitOfWork,RepositoryUnitOfWork>();
+
 builder.Services.AddDbContext<SQLiteDataBaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-//options => options.SignIn.RequireConfirmedAccount = true
+
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<SQLiteDataBaseContext>()
     .AddDefaultTokenProviders();
@@ -33,16 +38,17 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer(options =>
 {
     var secretkey = builder.Configuration["JwtSettings:Key"];
+
     if (secretkey == null)
         throw new Exception("Secret key is null");
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        RoleClaimType = ClaimTypes.Role,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretkey))
     };
 });
@@ -54,10 +60,10 @@ if (devbuild)
     {
         options.AddPolicy(specificoriginname, policy =>
         {
-            policy.WithOrigins("https://localhost:58430") // Замените на адрес вашего фронта
+            policy.WithOrigins("https://localhost:58430")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowCredentials(); // Это необходимо для работы авторизации и куков
+                  .AllowCredentials();
         });
     });
 }

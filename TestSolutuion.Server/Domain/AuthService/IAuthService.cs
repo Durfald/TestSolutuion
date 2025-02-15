@@ -1,7 +1,9 @@
-﻿namespace TestSolutuion.Server.Domain.AuthService
+﻿using TestSolutuion.Server.Domain.Models;
+
+namespace TestSolutuion.Server.Domain.AuthService
 {
     public interface IAuthService
     {
-        Task<(string Token, string Role)> LoginAsync(string username, string password);
+        Task<AuthModel> LoginAsync(string username, string password);
     }
 }

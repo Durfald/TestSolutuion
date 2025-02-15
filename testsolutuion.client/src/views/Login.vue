@@ -26,7 +26,11 @@
 <script lang="ts" setup>
 	import { defineComponent, ref } from 'vue';
 	import { useRouter } from 'vue-router';
-	import api from '@scripts/ApiService.ts';
+  import api from '@scripts/ApiService.ts';
+  import { useNotification } from '@/components/Notification.vue';
+  import { useStore } from 'vuex'; // Используем Vuex для поиска
+  const { showNotification } = useNotification();
+  const store = useStore();
 	const srv = new api();
   const username = ref('');
   const password = ref('');
@@ -35,14 +39,22 @@
   const handleLogin = async () => {
   	console.log('Logging in with', { username: username.value, password: password.value });
   	try {
+      var res = await srv.login({
+        Username: username.value,
+        Password: password.value,
+      });
+			if (!res) {
 
-			srv.login({
-				Username: username.value,
-				Password: password.value,
-			});
-  
-  		router.push({ path: '/' });
-  	} catch (error) {
+				showNotification({ type: 'error', message: 'Ошибка входе', time: 2000 });
+			} else {
+				if (store.getters.getRole === 'Manager') {
+          router.push({ path: '/users' });
+				} else {
+          router.push({ path: '/' });
+				}
+			}
+		} catch (error) {
+      showNotification({ type: 'error', message: 'Ошибка входе', time: 2000 });
   		console.error('Login failed:', error);
   	}
   };
